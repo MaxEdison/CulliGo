@@ -1,4 +1,4 @@
-module CulliGo
+module github.com/MaxEdison/CulliGo
 
 go 1.24.6
 

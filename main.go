@@ -1,13 +1,14 @@
 package main
 
 import (
-	solver "CulliGo/Captcha_Solver"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"time"
+
+	solver "github.com/MaxEdison/CulliGo/Captcha_Solver"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/utils"
