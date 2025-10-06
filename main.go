@@ -21,6 +21,22 @@ type Config struct {
 	Apikey   string `json:"api_key"`
 }
 
+type meal struct {
+	Name string `json:"name"`
+}
+
+type meals struct {
+	Day       string `json:"day"`
+	Breakfast []meal `json:"breakfast"`
+	Lunch     []meal `json:"lunch"`
+	Dinner    []meal `json:"dinner"`
+}
+
+type food struct {
+	Week  string  `json:"week"`
+	Meals []meals `json:"meals"`
+}
+
 func loadConfig(path string) (*Config, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -77,6 +93,10 @@ func try_login(page *rod.Page, cfg Config) error {
 	}
 
 	return fmt.Errorf("invalid login or captcha")
+}
+
+func scraper(page *rod.Page, week string) (food, error) {
+
 }
 
 func main() {
