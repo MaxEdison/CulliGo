@@ -88,7 +88,10 @@ func main() {
 	}
 
 	browser := rod.New().NoDefaultDevice().MustConnect()
+	defer browser.MustClose()
+
 	page := browser.MustPage(cfg.URL)
+	page.MustWaitLoad()
 
 	var Login_Err error
 
@@ -106,6 +109,7 @@ func main() {
 		return
 	}
 
-	page.MustWaitLoad()
+	page = browser.MustPage(cfg.URL + "Reservation/Reservation.aspx")
+
 	time.Sleep(time.Hour)
 }
