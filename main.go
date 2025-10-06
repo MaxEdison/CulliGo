@@ -34,15 +34,15 @@ func loadConfig(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-func send_data(username, password string, page *rod.Page) error {
+func send_data(page *rod.Page, cfg Config) error {
 
-	page.MustElement("#txtUsernamePlain").MustInput(username)
-	page.MustElement("#txtPasswordPlain").MustInput(password)
+	page.MustElement("#txtUsernamePlain").MustInput(cfg.Username)
+	page.MustElement("#txtPasswordPlain").MustInput(cfg.Password)
 
 	img := page.MustElement("#Img1")
 	_ = utils.OutputFile("Captchas/captcha.png", img.MustResource())
 
-	code, err := solver.Solver("Captchas/captcha.png")
+	code, err := solver.Solver("Captchas/captcha.png", cfg.Apikey)
 	if err != nil {
 		return fmt.Errorf("captcha solver failed: %w", err)
 	}
@@ -53,9 +53,9 @@ func send_data(username, password string, page *rod.Page) error {
 	return nil
 }
 
-func try_login(username, password string, page *rod.Page) error {
+func try_login(page *rod.Page, cfg Config) error {
 
-	if err := send_data(username, password, page); err != nil {
+	if err := send_data(page, cfg); err != nil {
 		return err
 	}
 
@@ -79,22 +79,29 @@ func try_login(username, password string, page *rod.Page) error {
 }
 
 func main() {
+
+	cfg, err := loadConfig("Config/config.json")
+	if err != nil {
+		fmt.Println("[ERROR] Can't load config:", err)
+		return
+	}
+
 	browser := rod.New().NoDefaultDevice().MustConnect()
-	page := browser.MustPage("FOOD RESERVATION WEBSITE URL")
+	page := browser.MustPage(cfg.URL)
 
 	var Login_Err error
 
 	for i := 1; i <= 3; i++ {
-		Login_Err = try_login("USERNAME", "PASSWORD", page)
-
+		Login_Err = try_login(page, *cfg)
+		fmt.Println("[DEBUG] Login Attempt", i, ":", Login_Err)
 		if Login_Err == nil {
 			break
 		}
-
 		time.Sleep(2 * time.Second)
 	}
 
 	if Login_Err != nil {
+		fmt.Println("[ERROR] All login attempts failed:", Login_Err)
 		return
 	}
 

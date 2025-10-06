@@ -6,8 +6,7 @@ import (
 	ocr "github.com/ranghetto/go_ocr_space"
 )
 
-func Solver(path string) (string, error) {
-	api_key := "YOUR API KEY"
+func Solver(path string, api_key string) (string, error) {
 
 	config := ocr.InitConfig(api_key, "eng", ocr.OCREngine2)
 
