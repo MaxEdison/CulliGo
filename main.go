@@ -3,13 +3,36 @@ package main
 import (
 	solver "CulliGo/Captcha_Solver"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/utils"
 )
+
+type Config struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	URL      string `json:"url"`
+	Apikey   string `json:"api_key"`
+}
+
+func loadConfig(path string) (*Config, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var cfg Config
+	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
+		return nil, err
+	}
+	return &cfg, nil
+}
 
 func send_data(username, password string, page *rod.Page) error {
 
