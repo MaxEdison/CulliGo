@@ -97,6 +97,13 @@ func try_login(page *rod.Page, cfg Config) error {
 
 func scraper(page *rod.Page, week string) (food, error) {
 
+	page.MustWaitLoad()
+
+	if week == "next" {
+		page.MustElement("#lnkNextWeek").MustClick()
+		page.MustWaitLoad()
+		time.Sleep(3 * time.Second)
+	}
 }
 
 func main() {
