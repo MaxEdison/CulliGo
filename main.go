@@ -279,7 +279,15 @@ func main() {
 		return
 	}
 
-	err = os.WriteFile("data.json", final_json, 0644)
+	if _, err := os.Stat("data"); os.IsNotExist(err) {
+		err = os.Mkdir("data", 0755)
+		if err != nil {
+			fmt.Println("[ERROR] Failed to create data directory:", err)
+			return
+		}
+	}
+
+	err = os.WriteFile("data/data.json", final_json, 0644)
 
 	if err != nil {
 		fmt.Println("[ERROR] Failed to write JSON to file:", err)
@@ -288,5 +296,5 @@ func main() {
 
 	fmt.Println("[INFO] DONE !")
 
-	time.Sleep(time.Hour)
+	// time.Sleep(time.Hour)
 }
