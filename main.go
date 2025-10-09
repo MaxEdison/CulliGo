@@ -131,7 +131,7 @@ func get_table_data(page *rod.Page, table_id string) ([]struct {
 					}
 
 					parts := strings.Split(value, "ریال")
-					if len(parts) > 0 {
+					if len(parts) < 2 {
 						continue
 					}
 
