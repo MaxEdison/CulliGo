@@ -36,3 +36,6 @@ config.json
 
 # Captchas
 Captchas/
+
+# data 
+data.json
