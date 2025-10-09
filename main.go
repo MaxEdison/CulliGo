@@ -181,6 +181,36 @@ func scraper(page *rod.Page, week string) (food, error) {
 		return food{}, err
 	}
 
+	days := make(map[string]*meals)
+	for _, data := range []struct {
+		meal_time string
+		data      []struct {
+			day   string
+			meals []Meal
+		}
+	}{
+		{"breakfast", breakfast},
+		{"lunch", lunch},
+		{"dinner", dinner},
+	} {
+		for _, entry := range data.data {
+
+			if _, exists := days[entry.day]; !exists {
+				days[entry.day] = &meals{Day: entry.day}
+			}
+
+			switch data.meal_time {
+			case "breakfast":
+				days[entry.day].Breakfast = entry.meals
+
+			case "lunch":
+				days[entry.day].Lunch = entry.meals
+
+			case "dinner":
+				days[entry.day].Dinner = entry.meals
+			}
+		}
+	}
 }
 
 func main() {
