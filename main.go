@@ -166,6 +166,21 @@ func scraper(page *rod.Page, week string) (food, error) {
 		time.Sleep(3 * time.Second)
 	}
 
+	breakfast, err := get_table_data(page, "cphMain_grdReservationBreakfast")
+	if err != nil {
+		return food{}, err
+	}
+
+	lunch, err := get_table_data(page, "cphMain_grdReservationLunch")
+	if err != nil {
+		return food{}, err
+	}
+
+	dinner, err := get_table_data(page, "cphMain_grdReservationDinner")
+	if err != nil {
+		return food{}, err
+	}
+
 }
 
 func main() {
