@@ -228,6 +228,8 @@ func scraper(page *rod.Page, week string) (food, error) {
 
 		all_meals = append(all_meals, *meals)
 	}
+
+	return food{Week: week, Meals: all_meals}, nil
 }
 
 func main() {
