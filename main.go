@@ -264,5 +264,29 @@ func main() {
 
 	page = browser.MustPage(cfg.URL + "Reservation/Reservation.aspx")
 
+	week := "this" // this | next
+	food, err := scraper(page, week)
+
+	if err != nil {
+		fmt.Println("[ERROR] Failed to scrape food data:", err)
+		return
+	}
+
+	final_json, err := json.MarshalIndent(food, "", "  ")
+
+	if err != nil {
+		fmt.Println("[ERROR] Failed to write JSON to file:", err)
+		return
+	}
+
+	err = os.WriteFile("data.json", final_json, 0644)
+
+	if err != nil {
+		fmt.Println("[ERROR] Failed to write JSON to file:", err)
+		return
+	}
+
+	fmt.Println("[INFO] DONE !")
+
 	time.Sleep(time.Hour)
 }
