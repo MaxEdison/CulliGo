@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	solver "github.com/MaxEdison/CulliGo/Captcha_Solver"
@@ -21,15 +22,15 @@ type Config struct {
 	Apikey   string `json:"api_key"`
 }
 
-type meal struct {
+type Meal struct {
 	Name string `json:"name"`
 }
 
 type meals struct {
 	Day       string `json:"day"`
-	Breakfast []meal `json:"breakfast"`
-	Lunch     []meal `json:"lunch"`
-	Dinner    []meal `json:"dinner"`
+	Breakfast []Meal `json:"breakfast"`
+	Lunch     []Meal `json:"lunch"`
+	Dinner    []Meal `json:"dinner"`
 }
 
 type food struct {
@@ -95,6 +96,66 @@ func try_login(page *rod.Page, cfg Config) error {
 	return fmt.Errorf("invalid login or captcha")
 }
 
+func get_table_data(page *rod.Page, table_id string) ([]struct {
+	day   string
+	meals []Meal
+}, error) {
+	table, _ := page.Element("#" + table_id)
+
+	rows, _ := table.Elements("tr:not(.HeaderStyle)")
+
+	var data []struct {
+		day   string
+		meals []Meal
+	}
+
+	for _, row := range rows {
+		cols, _ := row.Elements("td")
+
+		if len(cols) < 4 {
+			continue
+		}
+
+		day := strings.TrimSpace(cols[1].MustText())
+		var meals []Meal
+
+		select_elmnt, err := cols[3].Element("select")
+
+		if err == nil {
+			options, err := select_elmnt.Elements("option")
+			if err == nil && len(options) > 0 {
+				for _, option := range options {
+					value := strings.TrimSpace(option.MustText())
+					if value == "" || value == "-" {
+						continue
+					}
+
+					parts := strings.Split(value, "ریال")
+					if len(parts) > 0 {
+						continue
+					}
+
+					name := strings.TrimSpace(parts[0])
+					name = strings.ReplaceAll(name, "@", "[رستوران]")
+					name = strings.ReplaceAll(name, "*ر", "[کافه کتاب]")
+
+					last_space := strings.LastIndex(name, " ")
+					name = strings.TrimSpace(name[:last_space])
+
+					meals = append(meals, Meal{Name: name})
+				}
+			}
+		}
+
+		data = append(data, struct {
+			day   string
+			meals []Meal
+		}{day: day, meals: meals})
+	}
+
+	return data, nil
+}
+
 func scraper(page *rod.Page, week string) (food, error) {
 
 	page.MustWaitLoad()
@@ -104,6 +165,7 @@ func scraper(page *rod.Page, week string) (food, error) {
 		page.MustWaitLoad()
 		time.Sleep(3 * time.Second)
 	}
+
 }
 
 func main() {
