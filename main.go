@@ -211,6 +211,23 @@ func scraper(page *rod.Page, week string) (food, error) {
 			}
 		}
 	}
+
+	var all_meals []meals
+	for _, meals := range days {
+		if meals.Breakfast == nil {
+			meals.Breakfast = []Meal{}
+		}
+
+		if meals.Lunch == nil {
+			meals.Lunch = []Meal{}
+		}
+
+		if meals.Dinner == nil {
+			meals.Dinner = []Meal{}
+		}
+
+		all_meals = append(all_meals, *meals)
+	}
 }
 
 func main() {
