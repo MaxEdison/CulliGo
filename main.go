@@ -42,7 +42,7 @@ func main() {
 	})
 
 	app.Get("/scrape/:week", func(c *fiber.Ctx) error {
-		week := c.Params("week", "this")
+		week_flag := c.Params("week", "this")
 
 		page := browser.MustPage(cfg.URL)
 		page.MustWaitLoad()
@@ -66,7 +66,7 @@ func main() {
 
 		page = browser.MustPage(cfg.URL + "Reservation/Reservation.aspx")
 
-		food, err := scraper(page, week)
+		food, err := scraper(page, week_flag)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error":   "scraping failed",

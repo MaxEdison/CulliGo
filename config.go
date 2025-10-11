@@ -24,8 +24,9 @@ type meals struct {
 }
 
 type food struct {
-	Week  string  `json:"week"`
-	Meals []meals `json:"meals"`
+	WeekFlag string  `json:weekflag`
+	Week     string  `json:"week"`
+	Meals    []meals `json:"meals"`
 }
 
 func loadConfig(path string) (*Config, error) {

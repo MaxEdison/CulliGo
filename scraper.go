@@ -67,16 +67,18 @@ func get_table_data(page *rod.Page, table_id string) ([]struct {
 	return data, nil
 }
 
-func scraper(page *rod.Page, week string) (food, error) {
+func scraper(page *rod.Page, weekflag string) (food, error) {
 
 	page.MustWaitLoad()
 
-	if week == "next" {
+	if weekflag == "next" {
 		page.MustElement("#cphMain_imgbtnNextWeek").MustClick()
 
 		page.MustWaitLoad()
 		time.Sleep(3 * time.Second)
 	}
+
+	week := page.MustElement("#cphMain_lblWeekDate").MustText()
 
 	breakfast, err := get_table_data(page, "cphMain_grdReservationBreakfast")
 	if err != nil {
@@ -141,5 +143,5 @@ func scraper(page *rod.Page, week string) (food, error) {
 		all_meals = append(all_meals, *meals)
 	}
 
-	return food{Week: week, Meals: all_meals}, nil
+	return food{WeekFlag: weekflag, Week: week, Meals: all_meals}, nil
 }
