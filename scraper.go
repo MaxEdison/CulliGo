@@ -50,8 +50,8 @@ func get_table_data(page *rod.Page, table_id string) ([]struct {
 					name = strings.ReplaceAll(name, "@", "[رستوران]")
 					name = strings.ReplaceAll(name, "*ر", "[کافه کتاب]")
 
-					last_space := strings.LastIndex(name, " ")
-					name = strings.TrimSpace(name[:last_space])
+					// last_space := strings.LastIndex(name, " ")
+					// name = strings.TrimSpace(name[:last_space])
 
 					meals = append(meals, Meal{Name: name})
 				}
