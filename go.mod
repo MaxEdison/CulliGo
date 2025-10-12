@@ -1,6 +1,6 @@
 module github.com/MaxEdison/CulliGo
 
-go 1.24.6
+go 1.23
 
 require (
 	github.com/go-rod/rod v0.116.2
