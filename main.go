@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -31,7 +32,12 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	browser := rod.New().NoDefaultDevice().MustConnect()
+	url := launcher.New().
+		Headless(true).
+		Append("--no-sandbox").
+		MustLaunch()
+
+	browser := rod.New().ControlURL(url).NoDefaultDevice().MustConnect()
 	defer browser.MustClose()
 
 	app.Get("/health", func(c *fiber.Ctx) error {
@@ -45,6 +51,7 @@ func main() {
 		week_flag := c.Params("week", "this")
 
 		page := browser.MustPage(cfg.URL)
+
 		page.MustWaitLoad()
 
 		var loginErr error
