@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"os"
 )
 
@@ -30,15 +29,12 @@ type food struct {
 }
 
 func loadConfig(path string) (*Config, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
 
-	var cfg Config
-	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
-		return nil, err
+	cfg := Config{
+		Username: os.Getenv("username"),
+		Password: os.Getenv("password"),
+		URL:      os.Getenv("url"),
+		Apikey:   os.Getenv("api_key"),
 	}
 	return &cfg, nil
 }
